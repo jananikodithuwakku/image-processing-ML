@@ -28,9 +28,7 @@ export default function Assignment_1() {
     if (!image) return;
     setLoading(true);
 
-    Tesseract.recognize(image, "eng", {
-      logger: (m) => console.log(m),
-    })
+    Tesseract.recognize(image, "eng")
 
       .then(({ data }) => {
         const cleanedText = data.text.replace(/\s+/g, " ").trim();
