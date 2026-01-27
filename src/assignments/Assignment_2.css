@@ -1,0 +1,36 @@
+.face-container {
+  text-align: center;
+  font-family: Arial, sans-serif;
+}
+
+.image-box {
+  position: relative;
+  display: inline-block;
+  margin-top: 20px;
+}
+
+.image-box img {
+  border-radius: 10px;
+  border: 2px solid #444;
+}
+
+.image-box canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.btn {
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #0077ff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background-color: #021d3b;
+}
