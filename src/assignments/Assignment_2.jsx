@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import * as faceapi from "face-api.js";
 import "./Assignment_2.css";
 
-const MODEL = "/models";
+const MODEL = "./models";
 
 export default function Assignment_2() {
   const canvasRef = useRef(null);
