@@ -24,6 +24,7 @@ export default function Assignment_2() {
     if (!imageFile) return alert("Upload an image first!");
 
     try {
+      //load tiny face detector model
       await faceapi.nets.tinyFaceDetector.loadFromUri(MODEL);
       setModelsLoaded(true);
       console.log("Tiny Face Detector model loaded");
@@ -34,8 +35,24 @@ export default function Assignment_2() {
       const canvas = canvasRef.current;
       const displaySize = { width: image.width, height: image.height };
       faceapi.matchDimensions(canvas, displaySize);
-      
-    } catch {}
+
+      //detect faces
+      const detections = await faceapi.detectAllFaces(
+        image,
+        new faceapi.TinyFaceDetectorOptions()
+      );
+
+      const resizedDetections = faceapi.resizeResults(detections, displaySize);
+
+      //draw on canvas
+      const ctx = canvas.getContext("2d");
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      faceapi.draw.drawDetections(canvas, resizedDetections);
+
+      setDetected(true);
+    } catch (err) {
+      console.error("Detection error:", err);
+    }
   };
 
   return (
@@ -52,6 +69,7 @@ export default function Assignment_2() {
           </div>
 
           <button className="btn"onClick={handleDetect}>Detect Faces</button>
+
         </>
       )}
     </div>
