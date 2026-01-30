@@ -4,6 +4,14 @@ import "./Assignment_2.css";
 
 const MODEL = "./models";
 
+const loadedModels = {
+  tiny: false,
+  ssd: false,
+  landmarks: false,
+  expression: false,
+};
+
+
 export default function Assignment_2() {
   const canvasRef = useRef(null);
   const imageRef = useRef(null);
@@ -34,7 +42,11 @@ export default function Assignment_2() {
       let detections;
       // tiny face detector
       if (detector === "tiny") {
+
+        if(!loadedModels.tiny){
         await faceapi.nets.tinyFaceDetector.loadFromUri(MODEL);
+        loadedModels.tiny = true
+        }
 
         detections = await faceapi.detectAllFaces(
           imageRef.current,
@@ -44,7 +56,11 @@ export default function Assignment_2() {
 
        // SSD mobile net
       if (detector === "ssd") {
+        
+        if(!loadedModels.ssd){
         await faceapi.nets.ssdMobilenetv1.loadFromUri(MODEL);
+         loadedModels.ssd = true;
+        }
 
         detections = await faceapi.detectAllFaces(
           imageRef.current,
@@ -54,13 +70,48 @@ export default function Assignment_2() {
 
       // SSD - landmark 
       if (detector === "ssd_landmarks") {
+
+        if(!loadedModels.ssd){
         await faceapi.nets.ssdMobilenetv1.loadFromUri(MODEL);
+        loadedModels.ssd = true;
+        }
+
+        if(!loadedModels.landmarks){
         await faceapi.nets.faceLandmark68Net.loadFromUri(MODEL);
+        loadedModels.landmarks = true;
+        }
 
         detections = await faceapi
           .detectAllFaces(imageRef.current, new faceapi.SsdMobilenetv1Options())
           .withFaceLandmarks();
       }
+
+      // SDD - landmark - expression
+      if (detector === "expression") {
+
+        if(!loadedModels.ssd){
+        await faceapi.nets.ssdMobilenetv1.loadFromUri(MODEL);
+        loadedModels.ssd = true;
+        }
+
+        if(!loadedModels.landmarks){
+        await faceapi.nets.faceLandmark68Net.loadFromUri(MODEL);
+        loadedModels.landmarks = true;
+        }
+
+        if(!loadedModels.expression){
+        await faceapi.nets.faceExpressionNet.loadFromUri(MODEL);
+        loadedModels.expression = true;
+        }
+
+        detections = await faceapi.detectAllFaces(
+          imageRef.current,
+          new faceapi.SsdMobilenetv1Options()
+        )
+        .withFaceLandmarks()
+        .withFaceExpressions();
+      }
+
 
       const image = imageRef.current;
       const canvas = canvasRef.current;
@@ -86,6 +137,12 @@ export default function Assignment_2() {
       // draw landmarks only for ssd_landmarks
       if (detector === "ssd_landmarks") {
         faceapi.draw.drawFaceLandmarks(canvas, resized);
+      }
+
+      if (detector === "expression") {
+        faceapi.draw.drawFaceLandmarks(canvas, resized);
+        faceapi.draw.drawFaceExpressions(canvas, resized);
+
       }
 
       setDetected(true);
@@ -147,6 +204,17 @@ export default function Assignment_2() {
                 onChange={() => setDetector("ssd_landmarks")}
               />{" "}
               Landmarks
+            </label>
+
+              <br />
+
+             <label>
+              <input
+                type="checkbox"
+                checked={detector === "expression"}
+                onChange={() => setDetector("expression")}
+              />{" "}
+              Face Expression
             </label>
           </div>
 
