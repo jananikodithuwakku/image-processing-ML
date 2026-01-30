@@ -9,7 +9,7 @@ export default function Assignment_2() {
   const imageRef = useRef(null);
   const [imageFile, setImageFile] = useState(null);
   const [detected, setDetected] = useState(false);
-  const [detector, setDetector] = useState("tiny"); 
+  const [detector, setDetector] = useState("");
 
   const handleUpload = (e) => {
     const file = e.target.files[0];
@@ -38,18 +38,28 @@ export default function Assignment_2() {
 
         detections = await faceapi.detectAllFaces(
           imageRef.current,
-          new faceapi.TinyFaceDetectorOptions()
+          new faceapi.TinyFaceDetectorOptions(),
         );
       }
 
-      // SSD mobile net
+       // SSD mobile net
       if (detector === "ssd") {
         await faceapi.nets.ssdMobilenetv1.loadFromUri(MODEL);
 
         detections = await faceapi.detectAllFaces(
           imageRef.current,
-          new faceapi.SsdMobilenetv1Options()
+          new faceapi.SsdMobilenetv1Options(),
         );
+      }
+
+      // SSD - landmark 
+      if (detector === "ssd_landmarks") {
+        await faceapi.nets.ssdMobilenetv1.loadFromUri(MODEL);
+        await faceapi.nets.faceLandmark68Net.loadFromUri(MODEL);
+
+        detections = await faceapi
+          .detectAllFaces(imageRef.current, new faceapi.SsdMobilenetv1Options())
+          .withFaceLandmarks();
       }
 
       const image = imageRef.current;
@@ -57,20 +67,26 @@ export default function Assignment_2() {
 
       const displaySize = {
         width: image.width,
-        height: image.height
+        height: image.height,
       };
 
       faceapi.matchDimensions(canvas, displaySize);
 
       const resized = faceapi.resizeResults(
-        detections,
+        detections, 
         displaySize
-      );
+    );
+
       //draw on canvas
       const ctx = canvas.getContext("2d");
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       faceapi.draw.drawDetections(canvas, resized);
+
+      // draw landmarks only for ssd_landmarks
+      if (detector === "ssd_landmarks") {
+        faceapi.draw.drawFaceLandmarks(canvas, resized);
+      }
 
       setDetected(true);
     } catch (error) {
@@ -94,10 +110,10 @@ export default function Assignment_2() {
               width="620"
               height="620"
             />
-            <canvas
-              ref={canvasRef}
-              width="620"
-              height="620"
+            <canvas 
+                ref={canvasRef} 
+                width="620" 
+                height="620" 
             />
           </div>
 
@@ -120,6 +136,17 @@ export default function Assignment_2() {
                 onChange={() => setDetector("ssd")}
               />{" "}
               SSD MobileNet
+            </label>
+
+            <br />
+
+            <label>
+              <input
+                type="checkbox"
+                checked={detector === "ssd_landmarks"}
+                onChange={() => setDetector("ssd_landmarks")}
+              />{" "}
+              Landmarks
             </label>
           </div>
 
