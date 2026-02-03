@@ -1,0 +1,38 @@
+.spectacles-container {
+  text-align: center;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.image-wrap {
+  position: relative;
+  display: inline-block;
+}
+
+.image-wrap img {
+  max-width: 400px;
+  display: block;
+}
+
+.image-wrap canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+
+.btn3 {
+  margin-top: 15px;
+  padding: 10px 22px;
+  font-size: 16px;
+  cursor: pointer;
+  background: #222;
+  color: white;
+  border: none;
+  border-radius: 6px;
+}
+ .btn3:hover{
+    background-color: rgb(71, 71, 71);
+ }
