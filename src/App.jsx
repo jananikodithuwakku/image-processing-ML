@@ -8,6 +8,7 @@ function App() {
         <li><a href="#/assignment_1">Image Text Recognition </a></li>
         <li><a href="#/assignment_2"> Face Recognition </a></li>
         <li><a href="#/assignment_3"> Face Spectacles </a></li>
+        <li><a href="#/assignment_4"> Hand Image Detection </a></li>
       </ul>
     </>
   );
