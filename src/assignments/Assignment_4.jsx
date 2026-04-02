@@ -8,7 +8,7 @@ export default function Assignment_4() {
   const [hands, setHands] = useState(null);
   const [imageURL, setImageURL] = useState(null);
 
-  // Initialize MediaPipe Hands
+  // initialize mediaPipe hands
   useEffect(() => {
   const handsModel = new Hands({
     locateFile: (file) => {
@@ -18,7 +18,7 @@ export default function Assignment_4() {
 
   handsModel.setOptions({
     maxNumHands: 1,
-    modelComplexity: 1,   // IMPORTANT
+    modelComplexity: 1, 
     minDetectionConfidence: 0.7,
     minTrackingConfidence: 0.7,
   });
@@ -28,7 +28,7 @@ export default function Assignment_4() {
   setHands(handsModel);
 }, []);
 
-  // Upload image
+  // upload image
   const handleUpload = (event) => {
     const file = event.target.files[0];
     if (!file) return;
@@ -37,14 +37,14 @@ export default function Assignment_4() {
     setImageURL(url);
   };
 
-  // When image loads, send to MediaPipe
+  // when image loads send to MediaPipe
   const handleImageLoad = async () => {
     if (hands && imageRef.current) {
       await hands.send({ image: imageRef.current });
     }
   };
 
-  // Draw results
+  // draw results
   const onResults = (results) => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
